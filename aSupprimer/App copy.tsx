@@ -2,8 +2,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Route, Routes } from "react-router";
-import Home from "./Home";
-import Navbar from "./components/Navbar";
+// import Home from "../src/Home";
+import Navbar from "../src/components/Navbar";
 
 // type Word = {
 //   wordOriginal: string;
