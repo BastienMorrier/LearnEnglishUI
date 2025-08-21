@@ -1,7 +1,9 @@
 import Navbar from "./components/Navbar";
 import { Routes, Route } from "react-router-dom";
-import About from './routes/About';
-import Home from "./Home";
+import AllWords from './routes/AllWords';
+// import Home from "./Home;
+import Home from "./routes/Home";
+import FormAddWords from "./routes/FormAddWords";
 
 const App = () => {
   return (
@@ -9,7 +11,8 @@ const App = () => {
     <Navbar/>
     <Routes>
       <Route path="/" element={<Home/>}/>
-      <Route path="/about" element={<About/>}/>
+      <Route path="/allwords" element={<AllWords/>}/>
+      <Route path="/formaddwords" element={<FormAddWords/>}/>
     </Routes>
     </>
   )
