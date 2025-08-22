@@ -10,7 +10,7 @@ type Word = {
 };
 
 const FormAddWords = () => {
-      const [wordOriginal, setWordOriginal] = useState("");
+  const [wordOriginal, setWordOriginal] = useState("");
   const [wordTranslate, setWordTranslate] = useState("");
   const [level, setLevel] = useState(1);
 
@@ -37,38 +37,35 @@ const FormAddWords = () => {
   };
   return (
     <>
-    <div>FormAddWords</div>
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Mot original"
-        value={wordOriginal}
-        onChange={(e) => setWordOriginal(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        placeholder="Traduction"
-        value={wordTranslate}
-        onChange={(e) => setWordTranslate(e.target.value)}
-        required
-      />
-      <input
-        type="number"
-        placeholder="Niveau"
-        value={level}
-        onChange={(e) => setLevel(Number(e.target.value))}
-        min={1}
-      />
-      <button type="submit">Ajouter</button>
-    </form>
+      <h1 className="text-sky-950 text-3xl font-bold ml-5 mt-3">
+        FormAddWords
+      </h1>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Mot original"
+          value={wordOriginal}
+          onChange={(e) => setWordOriginal(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Traduction"
+          value={wordTranslate}
+          onChange={(e) => setWordTranslate(e.target.value)}
+          required
+        />
+        <input
+          type="number"
+          placeholder="Niveau"
+          value={level}
+          onChange={(e) => setLevel(Number(e.target.value))}
+          min={1}
+        />
+        <button type="submit">Ajouter</button>
+      </form>
     </>
-  )
-}
-
-
-
-
-
+  );
+};
 
 export default FormAddWords;

@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-interface Word{
-  id: number,
-  name: string
+interface Word {
+  id: number;
+  name: string;
 }
 
 const AllWords = () => {
-
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+  useEffect(() => {
     axios
       .get<Word[]>("https://localhost:7157/api/Word")
       .then((response) => {
@@ -28,16 +27,14 @@ const AllWords = () => {
 
   return (
     <>
-      <h2>AllWords</h2>
+      <h1 className="text-sky-950 text-3xl font-bold ml-5 mt-3">AllWords</h1>
       <ul>
-        {
-          words.map((word)=>(
-            <li key={word.id}>{word.name}</li>
-          ))
-        }
+        {words.map((word) => (
+          <li key={word.id}>{word.name}</li>
+        ))}
       </ul>
     </>
-  )
-}
+  );
+};
 
-export default AllWords
+export default AllWords;
