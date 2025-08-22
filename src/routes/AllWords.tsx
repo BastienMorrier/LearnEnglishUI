@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface Word {
-  id: number;
-  name: string;
+  id: string; // GUID = string
+  wordOriginal: string;
+  wordTranslate: string;
+  creationDate: string;
+  lastTestDate: string;
+  level: number;
 }
+
 
 const AllWords = () => {
   const [words, setWords] = useState<Word[]>([]);
@@ -28,9 +33,9 @@ const AllWords = () => {
   return (
     <>
       <h1 className="text-sky-950 text-3xl font-bold ml-5 mt-3">AllWords</h1>
-      <ul>
+      <ul className="ml-5">
         {words.map((word) => (
-          <li key={word.id}>{word.name}</li>
+          <li key={word.id}>{word.wordOriginal} - {word.wordTranslate} <strong>{word.level}</strong></li>
         ))}
       </ul>
     </>
