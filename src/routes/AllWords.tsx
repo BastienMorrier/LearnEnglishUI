@@ -10,7 +10,6 @@ interface Word {
   level: number;
 }
 
-
 const AllWords = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,11 +32,36 @@ const AllWords = () => {
   return (
     <>
       <h1 className="text-sky-950 text-3xl font-bold ml-5 mt-3">AllWords</h1>
-      <ul className="ml-5">
-        {words.map((word) => (
-          <li key={word.id}>{word.wordOriginal} - {word.wordTranslate} <strong>{word.level}</strong></li>
-        ))}
-      </ul>
+      <table className="table-fixed border border-gray-300 w-full text-left text-sm">
+        <thead className="bg-gray-100 text-gray-700">
+          <tr>
+            <th className="border border-gray-300 px-4 py-2">Original word</th>
+            <th className="border border-gray-300 px-4 py-2">Translation</th>
+            <th className="border border-gray-300 px-4 py-2">Level</th>
+            <th className="border border-gray-300 px-4 py-2">Creation date</th>
+            <th className="border border-gray-300 px-4 py-2">Last test date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {words.map((word) => (
+            <tr className="hover:bg-gray-50">
+              <td className="border border-gray-300 px-4 py-2">
+                {word.wordOriginal}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {word.wordTranslate}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">{word.level}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {word.creationDate}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {word.lastTestDate}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </>
   );
 };
