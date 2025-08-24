@@ -4,6 +4,7 @@ import AllWords from './routes/AllWords';
 // import Home from "./Home;
 import Home from "./routes/Home";
 import FormAddWords from "./routes/FormAddWords";
+import FlashCard from "./routes/FlashCard";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Route path="/" element={<Home/>}/>
       <Route path="/allwords" element={<AllWords/>}/>
       <Route path="/formaddwords" element={<FormAddWords/>}/>
+      <Route path="/flashcard" element={<FlashCard/>}/>
     </Routes>
     </>
   )

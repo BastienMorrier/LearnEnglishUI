@@ -6,6 +6,7 @@ const Navbar = () => {
       <Link to="/" style={{ margin: "0 10px" }}>Accueil</Link>
       <Link to="/allwords" style={{ margin: "0 10px" }}>AllWords</Link>
       <Link to="/formaddwords" style={{ margin: "0 10px" }}>FormAddWords</Link>
+      <Link to="/flashcard" style={{ margin: "0 10px" }}>FlashCard</Link>
     </nav>
   );
 }
