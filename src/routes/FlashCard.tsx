@@ -1,0 +1,132 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { ArrowLeftRight, CircleCheck, CircleX } from "lucide-react";
+
+interface Word {
+  id: string; // GUID = string
+  wordOriginal: string;
+  wordTranslate: string;
+  creationDate: string;
+  lastTestDate: string;
+  level: number;
+}
+
+const FlashCard = () => {
+  const [words, setWords] = useState<Word[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [flipped, setFlipped] = useState<Record<string, boolean>>({});
+  const [evaluation, setEvaluation] = useState<
+    Record<string, "up" | "down" | null>
+  >({});
+  const [originalLevel, setOriginalLevel] = useState<Record<string, number>>(
+    {}
+  );
+
+  useEffect(() => {
+    axios
+      .get<Word[]>("https://localhost:7157/api/Word/flashcards")
+      .then((response) => {
+        console.log(response.data);
+        setWords(response.data);
+        setLoading(false);
+
+        const levelMap: Record<string, number> = {};
+        response.data.forEach((word) => {
+          levelMap[word.id] = word.level;
+        });
+        setOriginalLevel(levelMap);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des données:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const updateWord = async (word: Word) => {
+    try {
+      await axios.put(`https://localhost:7157/api/Word`, word);
+      console.log(`Word ${word.id} updated successfully`);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour du mot :", error);
+    }
+  };
+
+  const toggleCard = (id: string) => {
+    setFlipped((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const levelUp = (id: string) => {
+    setWords((prevWords) =>
+      prevWords.map((word) => {
+        if (word.id !== id) return word;
+        const initial = originalLevel[id] ?? word.level;
+        const prevAction = evaluation[id];
+
+        let newLevel = word.level;
+        if (prevAction === "down") {
+          // Annule la baisse précédente et remets au niveau initial + 1
+          newLevel = Math.min(initial + 1, 5);
+        } else if (!prevAction) {
+          // Première action: +1
+          newLevel = Math.min(word.level + 1, 5);
+        }
+
+        return { ...word, level: newLevel };
+      })
+    );
+
+    setEvaluation((prev) => ({ ...prev, [id]: "up" }));
+  };
+
+  const levelDown = (id: string) => {
+    setWords((prevWords) =>
+      prevWords.map((word) => {
+        if (word.id !== id) return word;
+        const initial = originalLevel[id] ?? word.level;
+        const prevAction = evaluation[id];
+
+        let newLevel = word.level;
+        if (prevAction === "up") {
+          // Annule l'augmentation précédente et remets au niveau initial - 1
+          newLevel = Math.max(initial - 1, 1);
+        } else if (!prevAction) {
+          // Première action: level = 1 ou initial -1 selon ton besoin
+          newLevel = Math.max(initial - 1, 1);
+        }
+
+        return { ...word, level: newLevel };
+      })
+    );
+
+    setEvaluation((prev) => ({ ...prev, [id]: "down" }));
+  };
+
+  if (loading) return <p>Chargement...</p>;
+  return (
+    <>
+      <h1 className="text-sky-950 text-3xl font-bold ml-5 mt-3">FlashCard</h1>
+      <div>
+        <ul>
+          {words.map((word) => (
+            <li key={word.id}>
+              {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
+              <ArrowLeftRight onClick={() => toggleCard(word.id)} />
+              <CircleCheck onClick={() => levelUp(word.id)} />
+              <CircleX onClick={() => levelDown(word.id)} />
+            </li>
+          ))}
+        </ul>
+        <button
+          className="mt-4 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
+          onClick={() => {
+            words.forEach((word) => updateWord(word));
+          }}
+        >
+          Send words
+        </button>
+      </div>
+    </>
+  );
+};
+
+export default FlashCard;
