@@ -108,16 +108,40 @@ const FlashCard = () => {
       <div>
         <ul>
           {words.map((word) => (
-            <li key={word.id}>
-              {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
-              <ArrowLeftRight onClick={() => toggleCard(word.id)} />
-              <CircleCheck onClick={() => levelUp(word.id)} />
-              <CircleX onClick={() => levelDown(word.id)} />
+            <li
+              key={word.id}
+              className={`flex justify-between w-xs ml-5 my-3 p-5 rounded-lg border-3 border-solid 
+              ${
+                word.level === 1
+                  ? "bg-red-500"
+                  : word.level === 2
+                  ? "bg-orange-500"
+                  : word.level === 3
+                  ? "bg-yellow-300"
+                  : word.level === 4
+                  ? "bg-lime-300"
+                  : "bg-lime-500"
+              }`}
+            >
+              <div className="font-bold text-lg">
+                {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
+              </div>
+              <div className="flex">
+                <ArrowLeftRight
+                  onClick={() => toggleCard(word.id)}
+                  className="mx-2"
+                />
+                <CircleCheck
+                  onClick={() => levelUp(word.id)}
+                  className="mx-2"
+                />
+                <CircleX onClick={() => levelDown(word.id)} className="mx-2" />
+              </div>
             </li>
           ))}
         </ul>
         <button
-          className="mt-4 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
+          className="ml-5 mt-4 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
           onClick={() => {
             words.forEach((word) => updateWord(word));
           }}
