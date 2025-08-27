@@ -42,6 +42,10 @@ const FlashCard = () => {
       });
   }, []);
 
+  useEffect(()=>{
+    console.log(evaluation);
+  }, [evaluation])
+
   const updateWord = async (word: Word) => {
     try {
       await axios.put(`https://localhost:7157/api/Word`, word);
@@ -56,50 +60,61 @@ const FlashCard = () => {
   };
 
   const levelUp = (id: string) => {
-    setWords((prevWords) =>
-      prevWords.map((word) => {
-        if (word.id !== id) return word;
-        const initial = originalLevel[id] ?? word.level;
-        const prevAction = evaluation[id];
+  setWords((prevWords) =>
+    prevWords.map((word) => {
+      if (word.id !== id) return word;
+      const initial = originalLevel[id] ?? word.level;
+      const prevAction = evaluation[id];
 
-        let newLevel = word.level;
-        if (prevAction === "down") {
-          // Annule la baisse précédente et remets au niveau initial + 1
-          newLevel = Math.min(initial + 1, 5);
-        } else if (!prevAction) {
-          // Première action: +1
-          newLevel = Math.min(word.level + 1, 5);
-        }
+      let newLevel = word.level;
 
-        return { ...word, level: newLevel };
-      })
-    );
+      if (prevAction === "down") {
+        // Annule la baisse -> retour au niveau initial
+        newLevel = initial;
+        // Supprime l’action (on sortira du switch plus bas)
+        setEvaluation((prev) => {
+          const { [id]: removed, ...rest } = prev;
+          return rest;
+        });
+      } else if (!prevAction) {
+        // Première action: +1
+        newLevel = Math.min(word.level + 1, 5);
+        setEvaluation((prev) => ({ ...prev, [id]: "up" }));
+      }
 
-    setEvaluation((prev) => ({ ...prev, [id]: "up" }));
-  };
+      return { ...word, level: newLevel };
+    })
+  );
+};
 
-  const levelDown = (id: string) => {
-    setWords((prevWords) =>
-      prevWords.map((word) => {
-        if (word.id !== id) return word;
-        const initial = originalLevel[id] ?? word.level;
-        const prevAction = evaluation[id];
+const levelDown = (id: string) => {
+  setWords((prevWords) =>
+    prevWords.map((word) => {
+      if (word.id !== id) return word;
+      const initial = originalLevel[id] ?? word.level;
+      const prevAction = evaluation[id];
 
-        let newLevel = word.level;
-        if (prevAction === "up") {
-          // Annule l'augmentation précédente et remets au niveau initial - 1
-          newLevel = Math.max(initial - 1, 1);
-        } else if (!prevAction) {
-          // Première action: level = 1 ou initial -1 selon ton besoin
-          newLevel = Math.max(initial - 1, 1);
-        }
+      let newLevel = word.level;
 
-        return { ...word, level: newLevel };
-      })
-    );
+      if (prevAction === "up") {
+        // Annule la hausse -> retour au niveau initial
+        newLevel = initial;
+        // Supprime l’action
+        setEvaluation((prev) => {
+          const { [id]: removed, ...rest } = prev;
+          return rest;
+        });
+      } else if (!prevAction) {
+        // Première action: baisse
+        newLevel = 1;
+        setEvaluation((prev) => ({ ...prev, [id]: "down" }));
+      }
 
-    setEvaluation((prev) => ({ ...prev, [id]: "down" }));
-  };
+      return { ...word, level: newLevel };
+    })
+  );
+};
+
 
   if (loading) return <p>Chargement...</p>;
   return (
@@ -133,9 +148,9 @@ const FlashCard = () => {
                 />
                 <CircleCheck
                   onClick={() => levelUp(word.id)}
-                  className="mx-2"
+                  className={`mx-2 ${evaluation[word.id]=="up" ? "stroke-white" : "stroke-balck"}`}
                 />
-                <CircleX onClick={() => levelDown(word.id)} className="mx-2" />
+                <CircleX onClick={() => levelDown(word.id)} className={`mx-2 ${evaluation[word.id]=="down" ? "stroke-white" : "stroke-balck"}`} />
               </div>
             </li>
           ))}
