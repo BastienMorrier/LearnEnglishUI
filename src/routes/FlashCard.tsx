@@ -42,6 +42,10 @@ const FlashCard = () => {
       });
   }, []);
 
+  useEffect(()=>{
+    console.log(evaluation);
+  }, [evaluation])
+
   const updateWord = async (word: Word) => {
     try {
       await axios.put(`https://localhost:7157/api/Word`, word);
@@ -56,50 +60,61 @@ const FlashCard = () => {
   };
 
   const levelUp = (id: string) => {
-    setWords((prevWords) =>
-      prevWords.map((word) => {
-        if (word.id !== id) return word;
-        const initial = originalLevel[id] ?? word.level;
-        const prevAction = evaluation[id];
+  setWords((prevWords) =>
+    prevWords.map((word) => {
+      if (word.id !== id) return word;
+      const initial = originalLevel[id] ?? word.level;
+      const prevAction = evaluation[id];
 
-        let newLevel = word.level;
-        if (prevAction === "down") {
-          // Annule la baisse précédente et remets au niveau initial + 1
-          newLevel = Math.min(initial + 1, 5);
-        } else if (!prevAction) {
-          // Première action: +1
-          newLevel = Math.min(word.level + 1, 5);
-        }
+      let newLevel = word.level;
 
-        return { ...word, level: newLevel };
-      })
-    );
+      if (prevAction === "down") {
+        // Annule la baisse -> retour au niveau initial
+        newLevel = initial;
+        // Supprime l’action (on sortira du switch plus bas)
+        setEvaluation((prev) => {
+          const { [id]: removed, ...rest } = prev;
+          return rest;
+        });
+      } else if (!prevAction) {
+        // Première action: +1
+        newLevel = Math.min(word.level + 1, 5);
+        setEvaluation((prev) => ({ ...prev, [id]: "up" }));
+      }
 
-    setEvaluation((prev) => ({ ...prev, [id]: "up" }));
-  };
+      return { ...word, level: newLevel };
+    })
+  );
+};
 
-  const levelDown = (id: string) => {
-    setWords((prevWords) =>
-      prevWords.map((word) => {
-        if (word.id !== id) return word;
-        const initial = originalLevel[id] ?? word.level;
-        const prevAction = evaluation[id];
+const levelDown = (id: string) => {
+  setWords((prevWords) =>
+    prevWords.map((word) => {
+      if (word.id !== id) return word;
+      const initial = originalLevel[id] ?? word.level;
+      const prevAction = evaluation[id];
 
-        let newLevel = word.level;
-        if (prevAction === "up") {
-          // Annule l'augmentation précédente et remets au niveau initial - 1
-          newLevel = Math.max(initial - 1, 1);
-        } else if (!prevAction) {
-          // Première action: level = 1 ou initial -1 selon ton besoin
-          newLevel = Math.max(initial - 1, 1);
-        }
+      let newLevel = word.level;
 
-        return { ...word, level: newLevel };
-      })
-    );
+      if (prevAction === "up") {
+        // Annule la hausse -> retour au niveau initial
+        newLevel = initial;
+        // Supprime l’action
+        setEvaluation((prev) => {
+          const { [id]: removed, ...rest } = prev;
+          return rest;
+        });
+      } else if (!prevAction) {
+        // Première action: baisse
+        newLevel = 1;
+        setEvaluation((prev) => ({ ...prev, [id]: "down" }));
+      }
 
-    setEvaluation((prev) => ({ ...prev, [id]: "down" }));
-  };
+      return { ...word, level: newLevel };
+    })
+  );
+};
+
 
   if (loading) return <p>Chargement...</p>;
   return (
@@ -108,16 +123,40 @@ const FlashCard = () => {
       <div>
         <ul>
           {words.map((word) => (
-            <li key={word.id}>
-              {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
-              <ArrowLeftRight onClick={() => toggleCard(word.id)} />
-              <CircleCheck onClick={() => levelUp(word.id)} />
-              <CircleX onClick={() => levelDown(word.id)} />
+            <li
+              key={word.id}
+              className={`flex justify-between w-xs ml-5 my-3 p-5 rounded-lg border-3 border-solid 
+              ${
+                word.level === 1
+                  ? "bg-red-500"
+                  : word.level === 2
+                  ? "bg-orange-500"
+                  : word.level === 3
+                  ? "bg-yellow-300"
+                  : word.level === 4
+                  ? "bg-lime-300"
+                  : "bg-lime-500"
+              }`}
+            >
+              <div className="font-bold text-lg">
+                {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
+              </div>
+              <div className="flex">
+                <ArrowLeftRight
+                  onClick={() => toggleCard(word.id)}
+                  className="mx-2"
+                />
+                <CircleCheck
+                  onClick={() => levelUp(word.id)}
+                  className={`mx-2 ${evaluation[word.id]=="up" ? "stroke-white" : "stroke-balck"}`}
+                />
+                <CircleX onClick={() => levelDown(word.id)} className={`mx-2 ${evaluation[word.id]=="down" ? "stroke-white" : "stroke-balck"}`} />
+              </div>
             </li>
           ))}
         </ul>
         <button
-          className="mt-4 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
+          className="ml-5 mt-4 px-4 py-2 bg-sky-600 text-white rounded hover:bg-sky-700"
           onClick={() => {
             words.forEach((word) => updateWord(word));
           }}
