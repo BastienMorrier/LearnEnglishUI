@@ -62,7 +62,7 @@ const FormAddWords = () => {
           onChange={(e) => setLevel(Number(e.target.value))}
           min={1}
         />
-        <button type="submit">Ajouter</button>
+        <button type="submit">Add</button>
       </form>
     </>
   );
