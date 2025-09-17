@@ -34,11 +34,20 @@ const List = () => {
       >
         Create new list
       </a>
-      <div>
-        <ul>
+      <div className="ml-5">
+        <ul className="space-y-2">
           {list.map((lists) => (
-            <li key={lists.id}>
-              <a href={`/list/${lists.id}`}>{lists.name}</a>
+            <li key={lists.id} className="flex items-center mb-3">
+              <span className="inline-block w-7 h-7 bg-sky-950 rounded-md mr-5"/>
+              <div>
+                <a
+                  href={`/list/${lists.id}`}
+                  className="block leading-tight text-sky-900 font-bold text-lg hover:text-blue-600 hover:underline rounded-md transition duration-150"
+                >
+                  {lists.name}
+                </a>
+                <p>Liste - nb termes</p>
+              </div>
             </li>
           ))}
         </ul>

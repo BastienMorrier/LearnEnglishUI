@@ -123,21 +123,22 @@ const levelDown = (id: string) => {
       <div>
         <ul>
           {words.map((word) => (
-            <li
-              key={word.id}
-              className={`flex justify-between w-xs ml-5 my-3 p-5 rounded-lg border-3 border-solid 
-              ${
-                word.level === 1
-                  ? "bg-red-500"
-                  : word.level === 2
-                  ? "bg-orange-500"
-                  : word.level === 3
-                  ? "bg-yellow-300"
-                  : word.level === 4
-                  ? "bg-lime-300"
-                  : "bg-lime-500"
-              }`}
-            >
+<li
+  key={word.id}
+  className={`flex justify-between w-xs ml-5 my-3 p-5 rounded-lg border-3 border-solid bg-sky-50
+    ${
+      word.level === 1
+        ? "border-red-500"
+        : word.level === 2
+        ? "border-orange-500"
+        : word.level === 3
+        ? "border-yellow-300"
+        : word.level === 4
+        ? "border-lime-300"
+        : "border-lime-500"
+    }`}
+>
+
               <div className="font-bold text-lg">
                 {flipped[word.id] ? word.wordOriginal : word.wordTranslate}
               </div>

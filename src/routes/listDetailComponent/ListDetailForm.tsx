@@ -2,7 +2,11 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 
-const ListDetailForm = () => {
+type ListDetailFormProps = {
+  id: string
+};
+
+const ListDetailForm = ({id}: ListDetailFormProps) => {
   const [data, setData] = useState([{ wordOriginal: "", wordTranslate: "" }]);
 
   const handleClick = () => {
@@ -30,7 +34,7 @@ const ListDetailForm = () => {
     creationDate: new Date().toISOString(),
     lastTestDate: new Date().toISOString(),
     level: 1, // tu peux mettre la valeur que tu veux
-    listId: 1, // idem, à remplacer par ton vrai ListId
+    listId: parseInt(id), // idem, à remplacer par ton vrai ListId
   }));
 
       try {
