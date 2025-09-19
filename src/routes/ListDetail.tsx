@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import ListDetailForm from "./listDetailComponent/ListDetailForm";
+import ListFlashCard from "./listDetailComponent/ListFlashCard";
 
 const ListDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -14,6 +15,7 @@ const ListDetail = () => {
         ListDetail - {id}
       </h1>
       <ListDetailForm id={id} />
+      <ListFlashCard id={id} />
     </>
   );
 };

@@ -64,7 +64,7 @@ const ListDetailForm = ({id}: ListDetailFormProps) => {
             name="wordTranslate"
             value={val.wordTranslate}
             onChange={(e) => handleChange(e, i)}
-            placeholder="Traduction"
+            placeholder="Traduction FR"
           />
           <button onClick={() => handleDelete(i)} 
           className="ml-5 mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Delete</button>
