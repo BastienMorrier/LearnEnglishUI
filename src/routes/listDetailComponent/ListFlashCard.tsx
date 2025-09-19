@@ -11,7 +11,11 @@ interface Word {
   level: number;
 }
 
-const FlashCard = () => {
+type ListDetailFormProps = {
+  id: string
+};
+
+const ListFlashCard = ({id}: ListDetailFormProps) => {
   const [words, setWords] = useState<Word[]>([]);
   const [loading, setLoading] = useState(true);
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
@@ -24,7 +28,7 @@ const FlashCard = () => {
 
   useEffect(() => {
     axios
-      .get<Word[]>("https://localhost:7157/api/Word/flashcards")
+      .get<Word[]>(`https://localhost:7157/api/Word/flashcards/${id}`)
       .then((response) => {
         console.log(response.data);
         setWords(response.data);
@@ -178,4 +182,4 @@ const FlashCard = () => {
   );
 };
 
-export default FlashCard;
+export default ListFlashCard;
